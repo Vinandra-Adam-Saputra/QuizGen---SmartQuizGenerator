@@ -1,0 +1,5 @@
+{
+  "name": "AI Quiz Generator",
+  "description": "An application for teachers to generate interactive, auto-grading quizzes using AI. Teachers can create quizzes on various topics and share them with students via a unique link. Students can take the quizzes and see their results and explanations instantly.",
+  "requestFramePermissions": []
+}
