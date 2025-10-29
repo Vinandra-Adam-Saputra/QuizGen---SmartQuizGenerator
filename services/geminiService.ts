@@ -1,11 +1,6 @@
-// services/geminiService.ts
 import { GoogleGenAI, Type } from "@google/genai";
 import type { Quiz, QuestionType } from "../types";
 
-/**
- * Schema untuk memvalidasi struktur quiz yang diharapkan dari Gemini.
- * Memakai konstanta Type dari @google/genai seperti pada kode awalmu.
- */
 const quizSchema = {
   type: Type.OBJECT,
   properties: {
@@ -143,11 +138,11 @@ export const generateQuestionImage = async (description: string): Promise<string
         resolve(generatePlaceholderImage(description));
       };
       
-      // Set timeout 10 detik
+      // Set timeout 50 detik
       setTimeout(() => {
         console.warn("⏱️ Image generation timeout, using placeholder");
         resolve(generatePlaceholderImage(description));
-      }, 10000);
+      }, 50000);
       
       testImage.src = imageUrl;
     });
