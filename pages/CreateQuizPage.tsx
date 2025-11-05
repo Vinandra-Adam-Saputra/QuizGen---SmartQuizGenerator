@@ -294,8 +294,9 @@ const CreateQuizPage: React.FC = () => {
   const [generatedQuiz, setGeneratedQuiz] = useState<Quiz | null>(null);
   const { user } = useAuth();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    console.log(`📝 Form field changed: ${name} = "${value}"`); // DEBUG
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -309,12 +310,23 @@ const CreateQuizPage: React.FC = () => {
     setGeneratedQuiz(null);
 
     try {
+      // DEBUG: Log what we're sending
+      console.log('🔍 Sending to AI:', {
+        title: formData.quizTitle,
+        classLevel: formData.classLevel,
+        topic: formData.topic,
+        count: parseInt(formData.questionCount, 10),
+        type: formData.quizCategory,
+        description: formData.description, // CHECK IF THIS HAS VALUE
+      });
+
       const quizData = await generateQuiz(
         formData.quizTitle,
         formData.classLevel,
         formData.topic,
         parseInt(formData.questionCount, 10),
-        formData.quizCategory
+        formData.quizCategory,
+        formData.description // MAKE SURE THIS IS PASSED
       );
 
       const { data, error: insertError } = await supabase
@@ -388,17 +400,20 @@ const CreateQuizPage: React.FC = () => {
         
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-1">
-            Description (Optional)
+            Description (Optional) - Specific Instructions for Quiz Generation
           </label>
           <textarea
             name="description"
             id="description"
             value={formData.description}
-            onChange={handleInputChange as any}
-            placeholder="e.g. Focus on colors only, not numbers or shapes. Include visual examples."
+            onChange={handleInputChange}
+            placeholder="e.g., 'Only questions about colors (red, blue, green). NO numbers or shapes.'"
             rows={3}
-            className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md shadow-sm focus:ring-brand-secondary focus:border-brand-secondary sm:text-sm text-white p-2"
+            className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md shadow-sm focus:ring-brand-secondary focus:border-brand-secondary sm:text-sm text-white p-2 resize-none"
           />
+          <p className="mt-1 text-xs text-gray-400">
+            💡 Tip: Be specific! Use ALL CAPS for emphasis. Example: "ONLY 'a' and 'an', NO 'the'"
+          </p>
         </div>
         
         <InputField
